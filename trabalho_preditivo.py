@@ -46,6 +46,7 @@ if __name__ == "__main__":
     print("ACC: {0:.3f}".format(clf.score(x_test, y_test)))
     print("F1 Score: {0:.3f}".format(metrics.f1_score(y_test, clf.predict(x_test))))
     print("AUC score: {0:.3f}".format((metrics.roc_auc_score(y_test, clf.predict(x_test)))))
+    print("Confusion Matrix:\n{0}".format(metrics.confusion_matrix(y_test, clf.predict(x_test))))
 
     # print(np.count_nonzero(x_test == 0))
     # print(np.count_nonzero(x_test == 1))
