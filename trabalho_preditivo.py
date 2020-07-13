@@ -9,6 +9,7 @@ from sklearn.decomposition import PCA
 from sklearn.preprocessing import StandardScaler
 from sklearn.model_selection import train_test_split
 from sklearn.model_selection import StratifiedKFold
+from sklearn.svm import SVC
 from sklearn import metrics
 import scikitplot as skplt
 import matplotlib.pyplot as plt
@@ -29,7 +30,10 @@ if __name__ == "__main__":
     #                     max_iter=1000, momentum=0.9, verbose=False, early_stopping=False, n_iter_no_change=10)
 
     # clf = RandomForestClassifier(n_estimators=9, criterion='entropy')
-    clf = DecisionTreeClassifier(criterion='entropy', splitter='best', max_features='auto')
+    # clf = DecisionTreeClassifier(criterion='entropy', splitter='best', max_features='auto')
+
+    clf = SVC(C = 1, kernel='rbf', gamma='scale', tol=1e-5, max_iter=1000, probability=True)
+
     # clf = LogisticRegression(tol=1e-7, solver='liblinear', max_iter=1000)
     accuracies = []
 
