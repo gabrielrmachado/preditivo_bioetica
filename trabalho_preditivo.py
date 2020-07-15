@@ -9,6 +9,8 @@ from sklearn.decomposition import PCA
 from sklearn.preprocessing import StandardScaler
 from sklearn.model_selection import train_test_split
 from sklearn.model_selection import StratifiedKFold
+from sklearn.metrics import roc_curve
+from sklearn.metrics import roc_auc_score
 from sklearn.svm import SVC
 from sklearn import metrics
 import scikitplot as skplt
@@ -29,12 +31,12 @@ if __name__ == "__main__":
     # clf = MLPClassifier(hidden_layer_sizes=(20,), activation='logistic', solver='adam', learning_rate='adaptive', learning_rate_init=0.01,
     #                     max_iter=1000, momentum=0.9, verbose=False, early_stopping=False, n_iter_no_change=10)
 
-    # clf = RandomForestClassifier(n_estimators=9, criterion='entropy')
-    # clf = DecisionTreeClassifier(criterion='entropy', splitter='best', max_features='auto')
+    # clf = RandomForestClassifier(n_estimators=10, criterion='entropy', max_features=5)
+    # clf = DecisionTreeClassifier(criterion='entropy', splitter='best', max_features=5)
 
-    clf = SVC(C = 1, kernel='rbf', gamma='scale', tol=1e-5, max_iter=1000, probability=True)
+    # clf = SVC(C = 1, kernel='rbf', gamma='scale', tol=1e-5, max_iter=1000, probability=True)
 
-    # clf = LogisticRegression(tol=1e-7, solver='liblinear', max_iter=1000)
+    clf = LogisticRegression(tol=1e-7, solver='liblinear', max_iter=1000)
     accuracies = []
 
     x_train, x_test, y_train, y_test = train_test_split(x_pca, y, test_size=0.2, stratify = y)
@@ -53,10 +55,24 @@ if __name__ == "__main__":
     print("F1 Score: {0:.3f}".format(metrics.f1_score(y_test, y_pred)))
     print("AUC score: {0:.3f}".format((metrics.roc_auc_score(y_test, y_pred))))
     print("Confusion Matrix:\n{0}".format(metrics.confusion_matrix(y_test, y_pred)))
-    skplt.metrics.plot_roc_curve(y_test, clf.predict_proba(x_test))
+
+    # compute ROC curves
+    ns_probs = [0 for _ in range(len(y_test))]
+    fpr, tpr, _ = roc_curve(y_test, clf.predict_proba(x_test)[:, 1])
+    ns_fpr, ns_tpr, _ = roc_curve(y_test, ns_probs)
+    # plot the roc curve for the model
+    plt.plot(ns_fpr, ns_tpr, linestyle='--', label='Aleatório')
+    plt.plot(fpr, tpr, marker='.', label='Regressão Logística')
+    # axis labels
+    plt.xlabel('Taxa de Falsos Positivos')
+    plt.ylabel('Taxa de Verdadeiros Positivos')
+    # show the legend
+    plt.legend()
+    # show the plot
     plt.show()
 
-    # print(np.count_nonzero(x_test == 0))
-    # print(np.count_nonzero(x_test == 1))
+    
 
+    # skplt.metrics.plot_roc_curve(y_test, clf.predict_proba(x_test))
+    # plt.show()
 
